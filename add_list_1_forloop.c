@@ -91,19 +91,22 @@ int main(int argc, char *argv[]) {
   // Wait for the threads to finish.
   unsigned long long sum = 0;
   for (i = 0; i < threadCount; i++) {
-    pthread_join(threadIds[i], NULL);
+    if (pthread_join(threadIds[i], NULL) != 0) {
+      printf("Could not join thread #%d\n", i + 1);
+    }
+
     sum += data[i].result;
   }
 
   // Inform the user of the results and of the short cut.
   printf("Threads: %d\n", threadCount);
-  printf("Sum: %d\n", sum);
+  printf("Sum: %llu\n", sum);
   printf("\nA shortened version of the result: \"(number of lines) * (initial sum) = total sum\"\n"); 
   printf(
     "%d * %d = %llu\n\n", 
     ((end - start) / 2) + 1, 
     (end + start), 
-    (((end - start) / 2) + 1)  * (end + start));
+    (unsigned long long)(((end - start) / 2) + 1)  * (end + start));
 
   return 0;
 }
