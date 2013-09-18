@@ -1,6 +1,6 @@
 /**
  * Compiled using GCC version 4.8.1
- * Linux: gcc -pthread -o add_list_1_forloop add_list_1_forloop.c
+ * Linux: gcc -pthread -o gauss-add add_list_1_forloop.c
  */
 
 #include <stdio.h>
