@@ -3,6 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "guass_print.h"
+
+
 
 /*****************************************************/
 // Gauss list addition with 1 for  loop
@@ -18,18 +21,6 @@
 //
 //
 
-  void help_print() {
-        printf("\nThis is simple program to add up a list of numbers\n");
-        printf("\"From the story of Gauss\'s childhood\"\n");
-        printf("\nExample: 1 to 100 added \n 1+100=101\n 2+99=101 \n 3+98=101\n ...\n 50+51=101\n");
-        printf("\nTo work the sum of the total list needs to be even\n\n");
-   }
-
-  void usage_print(){
-        printf("Usage:\n \tadd_list -h\n \tadd_list -s num -e num\n\n");
-        printf("\texample ->  add_list -s 1 -e 100\n\n");
-     }
-
 
 
  int main(int argc, char *argv[]) {
@@ -44,10 +35,12 @@
      int option = 0;
      int add_start = -1, add_end = 0;
 
-     while((option=getopt(argc, argv, "hs:e:")) != -1) {
+     while((option=getopt(argc, argv, "vhs:e:")) != -1) {
    
           switch (option) { 
                  case 'h' : help_print(); 
+                     break;
+                 case 'v' : version_print();
                      break;
                  case 's': add_start = atoi(optarg);
                      break;
