@@ -22,11 +22,11 @@ const int MAXIMUM_THREADS = 1000;
 /**
  * Thread data structure.
  */
-struct ThreadData {
+typedef struct {
   int start;
   int stop;
   unsigned long long result;
-};
+} ThreadData;
 
 /**
  * Main entry point.
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 
   // Create an arrays for threading.
   int threadCount = find_number_of_threads(start, end);
-  struct ThreadData data[threadCount];
+  ThreadData data[threadCount];
   pthread_t threadIds[threadCount];
   int i = 0;
 
@@ -86,7 +86,6 @@ int main(int argc, char *argv[]) {
 
     if (pthread_create(&threadIds[i], NULL, &guassian_add, (void *)&data[i]) != 0) {
       printf("Could not create thread #%d.", i);
-      return -1;
     }
   }
 
@@ -117,7 +116,7 @@ int main(int argc, char *argv[]) {
  * Guassian addition.
  */
 void *guassian_add(void *arguments) {
-  struct ThreadData *data = (struct ThreadData *)arguments;
+  ThreadData *data = (ThreadData *)arguments;
   int a = data->start;
   int b = data->stop;
   int iterations = ((b - a) / 2) + 1;
