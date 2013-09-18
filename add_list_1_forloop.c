@@ -1,27 +1,32 @@
+/**
+ * Compiled using GCC version 4.8.1
+ * gcc -pthread -o add_list_1_forloop add_list_1_forloop.c
+ */
+
 #include <stdio.h>
 #include <getopt.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <pthread.h>
 
+void *guassian_add (void *arguments);
 void help_print (void);
 void usage_print (void);
 void validate_input (int start, int end);
 
-/*****************************************************/
-// Gauss list addition with 1 for  loop
-//
-// This is some very basic code if it breaks
-// your machine ... 
-//
-// Have fun with it. 
-//
-//
-// Created: 11 Sep 2013
-// By: Ed Rantanen
-//
-//
+/**
+ * Thread data structure.
+ */
+struct ThreadData {
+  int start;
+  int stop;
+  unsigned long long result;
+};
 
+/**
+ * Main entry point.
+ */
 int main(int argc, char *argv[]) {
   if (argc == 1) {
     printf("\nThis program needs some arguments ...  \n Try add_list -h \n\n");
@@ -55,24 +60,49 @@ int main(int argc, char *argv[]) {
   // Validate our input.
   validate_input(start, end);
 
-  // Variable dictionary for the work to be done.
-  int a = start;
-  int b = end;
-  int iterations = ((end - start) / 2) + 1;
+  // Create an array of thread data.
+  struct ThreadData data[1];
+  data[0].start = start;
+  data[0].stop = end;
+
+  // Spawn a single thread.
+  pthread_t threadIds[1];
+  if (pthread_create(&threadIds[0], NULL, &guassian_add, (void *)&data[0]) != 0) {
+    printf("Could not create thread.");
+    return -1;
+  }
+
+  // Wait for the thread to finish.
+  pthread_join(threadIds[0], NULL);
+
+  // Inform the user of the results and of the short cut.
+  printf("Sum: %d\n", data[0].result);
+  printf("\nA shortened version of the result: \"(number of lines) * (initial sum) = total sum\"\n"); 
+  printf(
+    "%d * %d = %llu \n\n", 
+    ((end - start) / 2) + 1, 
+    (end + start), 
+    (((end - start) / 2) + 1)  * (end + start));
+
+  return 0;
+}
+
+/**
+ * Guassian addition.
+ */
+void *guassian_add(void *arguments) {
+  struct ThreadData *data = (struct ThreadData *)arguments;
+  int a = data->start;
+  int b = data->stop;
+  int iterations = ((b - a) / 2) + 1;
   int i = 0;
-  unsigned long long result = 0;
+
+  data->result = 0;
 
   for (i = 0; i < iterations; i++) {
     int sum = --b + ++a;
-    result = result + sum;
-    printf("%d + %d = %d  %llu \n", b, a, sum, result);
+    data->result = data->result + sum;
   }
-
-  // Inform the user of the short cut.
-  printf("\nA shortened version of the result: \"(number of lines) * (initial sum) = total sum\"\n"); 
-  printf("%d * %d = %llu \n\n", iterations, (end + start), iterations  * (end + start));
-
-  return(0);
 }
 
 /**
