@@ -1,6 +1,6 @@
 /**
  * Compiled using GCC version 4.8.1
- * gcc -pthread -o add_list_1_forloop add_list_1_forloop.c
+ * Linux: gcc -pthread -o add_list_1_forloop add_list_1_forloop.c
  */
 
 #include <stdio.h>
@@ -11,9 +11,12 @@
 #include <pthread.h>
 
 void *guassian_add (void *arguments);
+int find_number_of_threads (int start, int end);
 void help_print (void);
 void usage_print (void);
 void validate_input (int start, int end);
+
+const int CHUNK_SIZE = 1000;
 
 /**
  * Thread data structure.
@@ -60,26 +63,44 @@ int main(int argc, char *argv[]) {
   // Validate our input.
   validate_input(start, end);
 
-  // Create an array of thread data.
-  struct ThreadData data[1];
-  data[0].start = start;
-  data[0].stop = end;
+  // Create an arrays for threading.
+  int threadCount = find_number_of_threads(start, end);
+  struct ThreadData data[threadCount];
+  pthread_t threadIds[threadCount];
+  int i = 0;
 
-  // Spawn a single thread.
-  pthread_t threadIds[1];
-  if (pthread_create(&threadIds[0], NULL, &guassian_add, (void *)&data[0]) != 0) {
-    printf("Could not create thread.");
-    return -1;
+  // Spawn threads.
+  for (i = 0; i < threadCount; i++) {
+    data[i].start = start + (i * CHUNK_SIZE);
+    data[i].stop = data[i].start + CHUNK_SIZE - 1;
+    data[i].result = 0;
+
+    if (data[i].stop > end) {
+      data[i].stop = end;
+    }
+
+    //// NOTE: Uncomment to view what ranges each thread is responsible for.
+    //printf("%d: %d to %d\n", i + 1, data[i].start, data[i].stop);
+
+    if (pthread_create(&threadIds[i], NULL, &guassian_add, (void *)&data[i]) != 0) {
+      printf("Could not create thread.");
+      return -1;
+    }
   }
 
-  // Wait for the thread to finish.
-  pthread_join(threadIds[0], NULL);
+  // Wait for the threads to finish.
+  unsigned long long sum = 0;
+  for (i = 0; i < threadCount; i++) {
+    pthread_join(threadIds[i], NULL);
+    sum += data[i].result;
+  }
 
   // Inform the user of the results and of the short cut.
-  printf("Sum: %d\n", data[0].result);
+  printf("Threads: %d\n", threadCount);
+  printf("Sum: %d\n", sum);
   printf("\nA shortened version of the result: \"(number of lines) * (initial sum) = total sum\"\n"); 
   printf(
-    "%d * %d = %llu \n\n", 
+    "%d * %d = %llu\n\n", 
     ((end - start) / 2) + 1, 
     (end + start), 
     (((end - start) / 2) + 1)  * (end + start));
@@ -101,8 +122,21 @@ void *guassian_add(void *arguments) {
 
   for (i = 0; i < iterations; i++) {
     int sum = --b + ++a;
-    data->result = data->result + sum;
+    data->result += sum;
   }
+}
+
+/**
+ * Find the number of threads to be used.
+ */
+int find_number_of_threads(int start, int end) {
+  int threads = (end - start) / CHUNK_SIZE;
+
+  if (CHUNK_SIZE * threads < end - start) {
+    threads++;
+  }
+
+  return threads;
 }
 
 /**
