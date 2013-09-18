@@ -17,6 +17,7 @@ void usage_print (void);
 void validate_input (int start, int end);
 
 const int CHUNK_SIZE = 1000;
+const int MAXIMUM_THREADS = 1000;
 
 /**
  * Thread data structure.
@@ -75,7 +76,8 @@ int main(int argc, char *argv[]) {
     data[i].stop = data[i].start + CHUNK_SIZE - 1;
     data[i].result = 0;
 
-    if (data[i].stop > end) {
+    // If we've exceeded the end amount or reached our maximum threads then set the stop to the actual end.
+    if ((data[i].stop > end) || (data[i].stop < end && i + 1 == threadCount)) {
       data[i].stop = end;
     }
 
@@ -83,7 +85,7 @@ int main(int argc, char *argv[]) {
     //printf("%d: %d to %d\n", i + 1, data[i].start, data[i].stop);
 
     if (pthread_create(&threadIds[i], NULL, &guassian_add, (void *)&data[i]) != 0) {
-      printf("Could not create thread.");
+      printf("Could not create thread #%d.", i);
       return -1;
     }
   }
@@ -139,7 +141,7 @@ int find_number_of_threads(int start, int end) {
     threads++;
   }
 
-  return threads;
+  return threads > MAXIMUM_THREADS ? MAXIMUM_THREADS : threads;
 }
 
 /**
