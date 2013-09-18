@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-void *guassian_add (void *arguments);
+void *gaussian_add (void *arguments);
 int find_number_of_threads (int start, int end);
 void help_print (void);
 void usage_print (void);
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     //// NOTE: Uncomment to view what ranges each thread is responsible for.
     //printf("%d: %d to %d\n", i + 1, data[i].start, data[i].stop);
 
-    if (pthread_create(&threadIds[i], NULL, &guassian_add, (void *)&data[i]) != 0) {
+    if (pthread_create(&threadIds[i], NULL, &gaussian_add, (void *)&data[i]) != 0) {
       printf("Could not create thread #%d.", i);
     }
   }
@@ -113,9 +113,9 @@ int main(int argc, char *argv[]) {
 }
 
 /**
- * Guassian addition.
+ * Gaussian addition.
  */
-void *guassian_add(void *arguments) {
+void *gaussian_add(void *arguments) {
   ThreadData *data = (ThreadData *)arguments;
   int a = data->start;
   int b = data->stop;
