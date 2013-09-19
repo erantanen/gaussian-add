@@ -25,3 +25,22 @@ void usage_print() {
   printf("Usage:\n \tgaussian-add -h\n \tgaussian-add -s num -e num\n\n");
   printf("\tExample: gaussian-add -s 1 -e 100\n\n");
 }
+
+/**
+ * Output a summary of the findings.
+ *
+ * @param numberOfThreads The total number of threads used in the processing.
+ * @param sum The sum of all the threaded results.
+ * @param start The number to start our computations.
+ * @param end The number to end our computations.
+ */
+void summary_print(int numberOfThreads, unsigned long long sum, int start, int end) {
+	printf("Threads: %d\n", numberOfThreads);
+	printf("Sum: %llu\n", sum);
+	printf("\nA shortened version of the result: \"(number of lines) * (initial sum) = total sum\"\n"); 
+	printf(
+		"%d * %d = %llu\n", 
+		((end - start) / 2) + 1, 
+		(end + start), 
+		(unsigned long long)(((end - start) / 2) + 1)  * (end + start));
+}

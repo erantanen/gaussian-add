@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -I. -pthread
 LDFLAGS=-pthread
-SOURCES=gaussian-add.c gauss_print.h gauss_print.c
+SOURCES=gaussian-add.c gauss_print.h gauss_print.c gaussian_threads.h gaussian_threads.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=gaussian-add
 

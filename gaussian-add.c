@@ -10,25 +10,16 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "gauss_print.h"
+#include "gaussian_threads.h"
 
-void *gaussian_add (void *arguments);
-int find_number_of_threads (int start, int end);
 void validate_input (int start, int end);
-
-const int CHUNK_SIZE = 1000;
-const int MAXIMUM_THREADS = 1000;
-
-/**
- * Thread data structure.
- */
-typedef struct {
-  int start;
-  int stop;
-  unsigned long long result;
-} ThreadData;
 
 /**
  * Main entry point.
+ *
+ * @param argc The argument count.
+ * @param argv The argument vector.
+ * @return The exit code.
  */
 int main(int argc, char *argv[]) {
   if (argc == 1) {
@@ -103,53 +94,16 @@ int main(int argc, char *argv[]) {
   }
 
   // Inform the user of the results and of the short cut.
-  printf("Threads: %d\n", threadCount);
-  printf("Sum: %llu\n", sum);
-  printf("\nA shortened version of the result: \"(number of lines) * (initial sum) = total sum\"\n"); 
-  printf(
-    "%d * %d = %llu\n\n", 
-    ((end - start) / 2) + 1, 
-    (end + start), 
-    (unsigned long long)(((end - start) / 2) + 1)  * (end + start));
+  summary_print(threadCount, sum, start, end);
 
   return 0;
-}
-
-/**
- * Gaussian addition.
- */
-void *gaussian_add(void *arguments) {
-  ThreadData *data = (ThreadData *)arguments;
-  int a = data->start;
-  int b = data->stop;
-  int iterations = ((b - a) / 2) + 1;
-  int i = 0;
-
-  data->result = 0;
-
-  for (i = 0; i < iterations; i++) {
-    int sum = --b + ++a;
-    data->result += sum;
-  }
-
-  return 0;
-}
-
-/**
- * Find the number of threads to be used.
- */
-int find_number_of_threads(int start, int end) {
-  int threads = (end - start) / CHUNK_SIZE;
-
-  if (CHUNK_SIZE * threads < end - start) {
-    threads++;
-  }
-
-  return threads > MAXIMUM_THREADS ? MAXIMUM_THREADS : threads;
 }
 
 /**
  * Validate user input.
+ *
+ * @param start The number to start our computations.
+ * @param end The number to end our computations.
  */
 void validate_input(int start, int end) {
   if (end <= start || end <= 1) {
