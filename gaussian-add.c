@@ -1,8 +1,3 @@
-/**
- * Compiled using GCC version 4.8.1
- * Linux: gcc -pthread -o gaussian-add gaussian-add.c gauss_print.h gauss_print.c
- */
-
 #include <stdio.h>
 #include <getopt.h>
 #include <string.h>
