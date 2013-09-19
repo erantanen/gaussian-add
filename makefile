@@ -1,10 +1,17 @@
 CC=gcc
-CFLAGS= -Wall -I. -pthread
-DEPS = gaussian_print.h
-OBJ = gaussian-add.o gauss_print.o 
+CFLAGS=-Wall -I. -pthread
+LDFLAGS=-pthread
+SOURCES=gaussian-add.c gauss_print.h gauss_print.c
+OBJECTS=$(SOURCES:.c=.o)
+EXECUTABLE=gaussian-add
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-gaussian-add: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS)
+.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	rm -rf *.o $(EXECUTABLE)

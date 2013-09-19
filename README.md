@@ -1,7 +1,7 @@
 Some backstory
 --------------
 
-There’s a popular story that Gauss, mathematician extraordinaire, had a lazy teacher. The so-called educator wanted to keep the kids busy so he could take a nap; he asked the class to add the numbers 1 to 100.
+There's a popular story that Gauss, mathematician extraordinaire, had a lazy teacher. The so-called educator wanted to keep the kids busy so he could take a nap; he asked the class to add the numbers 1 to 100.
 
 Gauss approached with his answer: 5050. So soon? The teacher suspected a cheat, but no. Manual addition was for suckers, and Gauss found a formula to sidestep the problem
 
