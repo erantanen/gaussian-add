@@ -1,18 +1,17 @@
-#
-#
-# makefile for hfd
-#
-# updated 29nov12
-
-
-
 CC=gcc
-CFLAGS= -Wall -I.
-DEPS = hfd_print.h
-OBJ = guassian-add.o guass_print.o 
+CFLAGS=-Wall -I. -pthread
+LDFLAGS=-pthread
+SOURCES=gaussian-add.c gauss_print.h gauss_print.c gaussian_threads.h gaussian_threads.c
+OBJECTS=$(SOURCES:.c=.o)
+EXECUTABLE=gaussian-add
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-guassian-add: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS)
+.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	rm -rf *.o $(EXECUTABLE)
