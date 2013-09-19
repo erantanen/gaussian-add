@@ -1,6 +1,6 @@
 /**
  * Compiled using GCC version 4.8.1
- * Linux: gcc -pthread -o gauss-add add_list_1_forloop.c
+ * Linux: gcc -pthread -o gaussian-add gaussian-add.c gauss_print.h
  */
 
 #include <stdio.h>
@@ -9,11 +9,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "gauss_print.h"
 
 void *gaussian_add (void *arguments);
 int find_number_of_threads (int start, int end);
-void help_print (void);
-void usage_print (void);
 void validate_input (int start, int end);
 
 const int CHUNK_SIZE = 1000;
@@ -41,19 +40,23 @@ int main(int argc, char *argv[]) {
   int end = 0;
 
   // Handle command line arguments.
-  while ((option = getopt(argc, argv, "hs:e:")) != -1) {
-    switch (option) { 
-       case 'h':
-        help_print();
-        break;
-
-       case 's':
+  while ((option = getopt(argc, argv, "hvs:e:")) != -1) {
+    switch (option) {
+      case 's':
         start = atoi(optarg);
         break;
 
-       case 'e':
+      case 'e':
         end = atoi(optarg);
         break;
+
+      case 'v':
+        version_print();
+        exit(EXIT_FAILURE);
+
+       case 'h':
+        help_print();
+        exit(EXIT_FAILURE);
 
        default:
         usage_print();
@@ -128,6 +131,8 @@ void *gaussian_add(void *arguments) {
     int sum = --b + ++a;
     data->result += sum;
   }
+
+  return 0;
 }
 
 /**
@@ -141,24 +146,6 @@ int find_number_of_threads(int start, int end) {
   }
 
   return threads > MAXIMUM_THREADS ? MAXIMUM_THREADS : threads;
-}
-
-/**
- * Output helpful information for the uninformed.
- */
-void help_print() {
-  printf("\nThis is simple program to add up a list of numbers\n");
-  printf("\"From the story of Gauss\'s childhood\"\n");
-  printf("\nExample: 1 to 100 added \n 1+100=101\n 2+99=101 \n 3+98=101\n ...\n 50+51=101\n");
-  printf("\nTo work the sum of the total list needs to be even\n\n");
-}
-
-/**
- * Output usage information.
- */
-void usage_print() {
-  printf("Usage:\n \tadd_list -h\n \tadd_list -s num -e num\n\n");
-  printf("\texample ->  add_list -s 1 -e 100\n\n");
 }
 
 /**

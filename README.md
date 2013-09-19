@@ -10,9 +10,8 @@ Gauss approached with his answer: 5050. So soon? The teacher suspected a cheat, 
 Compiling
 ---------
 
-Using GCC version 4.8.1 you may execute the following:
 ```
-gcc -pthread -o gauss-add add_list_1_forloop.c
+make
 ```
 
 Executing
@@ -20,12 +19,13 @@ Executing
 
 To execute the program you can use the following arguments:
  - **-h**: outputs the help text
+ - **-v**: outputs a arbitrary version number
  - **-s**: starting number
  - **-e**: ending number
 
 Example:
 ```
-./gauss-add -s 1001 -e 10000000
+./gaussian-add -s 1001 -e 10000000
 ```
 
 Expected output:

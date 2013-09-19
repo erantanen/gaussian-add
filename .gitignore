@@ -1,3 +1,6 @@
-add_list_1_forloop
-add-list
-gauss-add
+*.o
+*.ls
+source.old
+*.swp
+a.out
+gaussian-add
